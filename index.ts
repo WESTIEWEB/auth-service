@@ -5,6 +5,7 @@ import { login } from './interfaces/login.interface';
 import mongoose, { ConnectOptions } from 'mongoose';
 import crypto from "crypto"
 import { credential } from './models/credential.model';
+import { harsh, harshDigest } from './models/harsh_model'
 
 dotenv.config();
 
@@ -28,12 +29,13 @@ mongoose.connect('mongodb://localhost:27017/crypto-market', {
 app.get('/', (req: Request, res: Response) => {
   res.send('Express is your firend + TypeScript Server');
 });
-
 app.post(`${VERSION}/${BASE_URL}/register`, (req: Request, res: Response) => {
   let data: register = req.body;
-  const hash512 = crypto.createHash('sha512');
-  const hashData = hash512.update(data.password, 'utf-8');
-  const hashedPassword = hashData.digest("hex");
+  //const hash512 = crypto.createHash('sha512');
+  //const hashData = hash512.update(data.password, 'utf-8');
+  //const hashedPassword = hashData.digest("hex");
+  const hashData = harsh(data.password, 'utf-8')
+  const hashedPassword = harshDigest("hex")
   credential.create({
     email: data.email,
     username: data.username,
@@ -53,9 +55,11 @@ app.post(`${VERSION}/${BASE_URL}/register`, (req: Request, res: Response) => {
 app.post(`${VERSION}/${BASE_URL}/login`, (req: Request, res: Response) => {
   const data: login = req.body;
   //Assignment: Refactor hashing strategy to have it in one place only as it is repeated
-  const hash512 = crypto.createHash('sha512');
-  const hashData = hash512.update(data.password, 'utf-8');
-  const hashedPassword = hashData.digest("hex");
+  //const hash512 = crypto.createHash('sha512');
+  //const hashData = hash512.update(data.password, 'utf-8');
+  //const hashedPassword = hashData.digest("hex");
+  const hashData = harsh(data.password, 'utf-8')
+  const hashedPassword = harshDigest('hex')
   credential.findOne({
     username: data.username
   }).then(user => {
