@@ -5,7 +5,7 @@ import { login } from './interfaces/login.interface';
 import mongoose, { ConnectOptions } from 'mongoose';
 import crypto from "crypto"
 import { credential } from './models/credential.model';
-import { harsh, harshDigest } from './models/harsh_model'
+import {harsh} from './models/harsh_model'
 
 dotenv.config();
 
@@ -34,8 +34,7 @@ app.post(`${VERSION}/${BASE_URL}/register`, (req: Request, res: Response) => {
   //const hash512 = crypto.createHash('sha512');
   //const hashData = hash512.update(data.password, 'utf-8');
   //const hashedPassword = hashData.digest("hex");
-  const hashData = harsh(data.password, 'utf-8')
-  const hashedPassword = harshDigest("hex")
+  const hashedPassword = harsh(data.password)
   credential.create({
     email: data.email,
     username: data.username,
@@ -58,8 +57,7 @@ app.post(`${VERSION}/${BASE_URL}/login`, (req: Request, res: Response) => {
   //const hash512 = crypto.createHash('sha512');
   //const hashData = hash512.update(data.password, 'utf-8');
   //const hashedPassword = hashData.digest("hex");
-  const hashData = harsh(data.password, 'utf-8')
-  const hashedPassword = harshDigest('hex')
+  const hashedPassword = harsh(data.password)
   credential.findOne({
     username: data.username
   }).then(user => {
